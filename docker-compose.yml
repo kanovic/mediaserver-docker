@@ -2,7 +2,7 @@
 version: "2.1"
 services:
   sabnzbd:
-    image: ghcr.io/linuxserver/sabnzbd
+    image: ghcr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
     environment:
       - PUID=1000
@@ -18,48 +18,62 @@ services:
     restart: unless-stopped
 
   radarr:
-    image: linuxserver/radarr
+    image: linuxserver/radarr:latest
     container_name: radarr
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Amsterdam
-      - UMASK_SET=022
+      - UMASK_SET=022 #optional
     volumes:
       - /etc/home-media/radarr:/config
-      - /mnt/Media/Videos/Movies:/media
+      - /mnt/Media/Videos/Movies:/movies
       - /mnt/Downloads/Usenet/complete:/downloads
     ports:
       - 7878:7878
     restart: unless-stopped
 
   sonarr:
-    image: linuxserver/sonarr
+    image: linuxserver/sonarr:latest
     container_name: sonarr
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Amsterdam
-      - UMASK_SET=022
+      - UMASK_SET=022 #optional
     volumes:
       - /etc/home-media/sonarr:/config
-      - /mnt/Media/Videos/Series:/media
+      - /mnt/Media/Videos/Series:/tv
       - /mnt/Downloads/Usenet/complete:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
 
   plex:
-    image: ghcr.io/linuxserver/plex
+    image: ghcr.io/linuxserver/plex:latest
     container_name: plex
     network_mode: host
     environment:
       - PUID=1000
       - PGID=1000
       - VERSION=docker
-      - UMASK_SET=022
+      - UMASK_SET=022 #optional
     volumes:
       - /etc/home-media/plex:/config
       - /mnt/Media/Videos/Series:/tv
       - /mnt/Media/Videos/Movies:/movies
+    restart: unless-stopped
+   
+  jackett:
+    image: ghcr.io/linuxserver/jackett:latest
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Amsterdam
+    volumes:
+      - /etc/home-media/jackett:/config
+      - /mnt/Downloads/Torrent/watch:/downloads
+    ports:
+      - 9117:9117
     restart: unless-stopped
